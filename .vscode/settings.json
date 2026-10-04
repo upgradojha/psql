@@ -1,0 +1,40 @@
+{
+  "sqltools.connections": [
+    {
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "pg local",
+      "database": "SQL 50",
+      "username": "postgres",
+      "password": "12345678",
+      "connectionTimeout": 30
+    },
+    {
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "askForPassword": true,
+      "driver": "PostgreSQL",
+      "database": "SQL 50",
+      "name": "local",
+      "username": "postgres",
+      "connectionTimeout": 30
+    },
+    {
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "practice ",
+      "password": "2004",
+      "database": "practice",
+      "username": "postgres",
+      "connectionTimeout": 30
+    }
+  ]
+}
