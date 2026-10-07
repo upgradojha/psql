@@ -1,3 +1,0 @@
--- CASE statmetn in PSQL
-
-

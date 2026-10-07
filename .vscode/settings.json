@@ -35,6 +35,17 @@
       "database": "practice",
       "username": "postgres",
       "connectionTimeout": 30
+    },
+    {
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "subqueries",
+      "database": "subQueries",
+      "username": "postgres",
+      "password": "2004"
     }
   ]
 }
