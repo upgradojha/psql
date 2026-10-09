@@ -46,6 +46,17 @@
       "database": "subQueries",
       "username": "postgres",
       "password": "2004"
+    },
+    {
+      "ssh": "Disabled",
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "driver": "PostgreSQL",
+      "name": "WindowFunctions",
+      "database": "window function",
+      "username": "postgres",
+      "password": "2004"
     }
   ]
 }
