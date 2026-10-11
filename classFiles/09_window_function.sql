@@ -522,12 +522,322 @@ FROM
 WHERE
   RANK=2;
 
+
 -- Calculating the running total of the given orderTable entries
+WITH
+  running AS (
+    SELECT
+      *,
+      SUM(amount) OVER (
+        PARTITION BY
+          customer
+        ORDER BY
+          order_date
+      ) AS running_total
+    FROM
+      orders
+  )
+SELECT
+  *
+FROM
+  running;
+
+
 SELECT
   *,
-  SUM(amount) OVER (
-    ORDER BY
-      order_date
-  ) AS running_total
+  ROW_NUMBER() OVER (
+    PARTITION BY
+      customer
+  ) AS this_is_customer_nth_order
 FROM
   orders;
+
+
+SELECT
+  *
+FROM
+  monthly_sales;
+
+
+-- rows between 2 preceding and current month avg(revenue)
+WITH
+  monthly_sales AS (
+    SELECT
+      *,
+      AVG(revenue) OVER (
+        PARTITION BY
+          region
+        ORDER BY
+          MONTH ROWS BETWEEN 2 PRECEDING
+          AND CURRENT ROW
+      ) AS monthly_sales
+    FROM
+      monthly_sales
+  )
+SELECT
+  *
+FROM
+  monthly_sales
+WHERE
+  region='North';
+
+
+WITH
+  revenue_tbl AS (
+    SELECT
+      *,
+      SUM(revenue) OVER (
+        PARTITION region
+        ORDER BY
+          MONTH ROWS BETWEEN PRECEDING 5
+          AND CURRENT_row
+      ) AS 6 _month_running_tatal,
+      SUM(revenue) OVER (
+        PARTITION BY
+          region
+      ) AS total_revenues
+    FROM
+      monthly_sales
+  )
+SELECT
+  *
+FROM
+  revenue_tbl
+WHERE
+  region='North';
+
+
+--
+WITH
+  sales_table AS (
+    SELECT
+      *,
+      SUM(revenue) OVER (
+        PARTITION BY
+          region
+        ORDER BY
+          MONTH ROWS BETWEEN 5 PRECEDING
+          AND CURRENT ROW
+      ) AS six_month_running_total,
+      SUM(revenue) OVER () AS grand_total
+    FROM
+      monthly_sales
+  )
+SELECT
+  *,
+  ROUND(100.0*six_month_running_total/grand_total, 2)||'%' AS percentage_of
+FROM
+  sales_table
+WHERE
+  region='North';
+
+
+-- LAG and LEAD
+SELECT
+  MONTH,
+  revenue,
+  LAG(revenue) OVER (
+    ORDER BY
+      MONTH
+  ) AS previous_month,
+  LEAD(revenue) OVER (
+    ORDER BY
+      MONTH
+  ) AS next_month
+FROM
+  monthly_sales
+WHERE
+  region='North';
+
+
+--
+SELECT
+  MONTH,
+  revenue,
+  revenue-LAG(revenue) OVER (
+    ORDER BY
+      MONTH
+  ) AS cng_in_month,
+  ROUND(
+    100.0*(
+      revenue-LAG(revenue) OVER (
+        ORDER BY
+          MONTH
+      )
+    )/LAG(revenue) OVER (
+      ORDER BY
+        MONTH
+    ),
+    2
+  )||'%' AS percentage_chagne
+FROM
+  monthly_sales;
+
+
+SELECT
+  *,
+  LAG(revenue) OVER (
+    ORDER BY
+      MONTH
+  ) AS previous_month_from_current,
+  LEAD(revenue) OVER (
+    ORDER BY
+      MONTH
+  ) AS next_month_from_current
+FROM
+  monthly_sales
+WHERE
+  region='North';
+
+
++ ---------------+---------+
+|COLUMN NAME|
+TYPE|+ ---------------+---------+
+|id|INT||recordDate|date||temperature|INT|+ ---------------+---------+
+;
+
+
+/*
+Table: Scores
+
++-------------+---------+
+| Column Name | Type    |
++-------------+---------+
+| id          | int     |
+| score       | decimal |
++-------------+---------+
+id is the primary key (column with unique values) for this table.
+Each row of this table contains the score of a game. Score is a floating point value with two decimal places.
+
+
+Write a solution to find the rank of the scores. The ranking should be calculated according to the following rules:
+
+The scores should be ranked from the highest to the lowest.
+If there is a tie between two scores, both should have the same ranking.
+After a tie, the next ranking number should be the next consecutive integer value. In other words, there should be no holes between ranks.
+Return the result table ordered by score in descending order.
+
+The result format is in the following example.
+
+
+
+Example 1:
+
+Input:
+Scores table:
++----+-------+
+| id | score |
++----+-------+
+| 1  | 3.50  |
+| 2  | 3.65  |
+| 3  | 4.00  |
+| 4  | 3.85  |
+| 5  | 4.00  |
+| 6  | 3.65  |
++----+-------+
+Output:
++-------+------+
+| score | rank |
++-------+------+
+| 4.00  | 1    |
+| 4.00  | 1    |
+| 3.85  | 2    |
+| 3.65  | 3    |
+| 3.65  | 3    |
+| 3.50  | 4    |
++-------+------+
+ */
+SELECT
+  score,
+  DENSE_RANK(score) OVER () AS RANK
+FROM;
+
+
+
+
+WITH
+  queue_tbl AS (
+    SELECT
+      *,
+      SUM(weight) OVER (
+        ORDER BY
+          turn
+      ) AS running_total_weight_acrd_turn
+    FROM
+      lc_queue
+  )
+SELECT
+  *
+FROM
+  queue_tbl
+WHERE
+  running_total_weight_acrd_turn<=1000
+ORDER BY
+  running_total_weight_acrd_turn DESC
+LIMIT
+  1;
+
+-- remove the previous table if it exists
+DROP TABLE IF EXISTS stadium;
+
+
+-- create the table
+CREATE TABLE
+  stadium (
+    id INT PRIMARY KEY,
+    visit_date date UNIQUE NOT NULL,
+    people INT NOT NULL
+  );
+
+
+-- insert sample data
+INSERT INTO
+  stadium (id, visit_date, people)
+VALUES
+  (1, '2017-01-01', 10),
+  (2, '2017-01-02', 109),
+  (3, '2017-01-03', 150),
+  (4, '2017-01-04', 99),
+  (5, '2017-01-05', 145),
+  (6, '2017-01-06', 1455),
+  (7, '2017-01-07', 199),
+  (8, '2017-01-09', 188),
+  (9, '2017-01-10', 120),
+  (10, '2017-01-11', 95),
+  (11, '2017-01-12', 130),
+  (12, '2017-01-13', 140),
+  (13, '2017-01-14', 160),
+  (14, '2017-01-15', 80),
+  (15, '2017-01-16', 200),
+  (16, '2017-01-17', 210),
+  (17, '2017-01-18', 220),
+  (18, '2017-01-19', 230),
+  (19, '2017-01-20', 70),
+  (20, '2017-01-21', 110);
+
+SELECT * FROM stadium;
+-- view all records
+
+WITH stadium_table AS (
+    SELECT
+        id,
+        visit_date,
+        people,
+
+        LEAD(id, 1) OVER (ORDER BY id) AS next_id,
+        LEAD(id, 2) OVER (ORDER BY id) AS third_id,
+
+        LEAD(people, 1) OVER (ORDER BY id) AS next_people,
+        LEAD(people, 2) OVER (ORDER BY id) AS third_people
+
+    FROM stadium
+)
+SELECT *
+FROM stadium_table
+
+ WHERE next_id = id + 1
+  AND third_id = id + 2
+  AND people >= 100
+  AND next_people >= 100
+  AND third_people >= 100
+;
