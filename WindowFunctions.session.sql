@@ -2,6 +2,8 @@
 DROP TABLE IF EXISTS stadium;
 
 
+
+
 -- create the table
 CREATE TABLE
   stadium (
